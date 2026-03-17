@@ -1,179 +1,913 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculator with History Button</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    .calculator {
-      max-width: 320px;
-      margin: 20px auto 10px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .display {
-      font-size: 24px;
-      height: 50px;
-      text-align: right;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      background-color: #f8f9fa;
-      user-select: none;
-    }
-    #historyContainer {
-      max-width: 320px;
-      margin: 10px auto 30px;
-      background: #f1f3f5;
-      border-radius: 6px;
-      padding: 10px;
-      height: 140px;
-      overflow-y: auto;
-      font-family: monospace;
-      white-space: pre-wrap;
-      display: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surface Store — Microsoft Surface Laptops</title>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ef;
+    --bg-card: #ffffff;
+    --bg-dark: #0f0f0f;
+    --text: #111111;
+    --text-2: #555555;
+    --text-3: #888888;
+    --accent: #0067b8;
+    --accent-2: #005a9e;
+    --border: #e0ddd8;
+    --success: #107c10;
+    --warn: #c55a11;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.13);
+    --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245,243,239,0.92); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 2rem;
+    padding: 0 5vw; height: 60px;
+  }
+  .nav-logo { font-family: var(--font-display); font-size: 1.3rem; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; margin-left: auto; }
+  .nav-links a { text-decoration: none; font-size: 0.875rem; color: var(--text-2); font-weight: 400; transition: color var(--transition); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; margin-left: 1.5rem; }
+  .cart-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    padding: 7px 18px; font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: background var(--transition); display: flex; align-items: center; gap: 6px;
+  }
+  .cart-btn:hover { background: var(--accent-2); }
+  .cart-count {
+    background: #fff; color: var(--accent); border-radius: 50%;
+    width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .search-btn {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 12px; cursor: pointer; font-size: 0.875rem; color: var(--text-2);
+    font-family: var(--font-body); transition: border-color var(--transition);
+  }
+  .search-btn:hover { border-color: var(--text-3); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 4rem; padding: 6rem 5vw 4rem;
+    background: linear-gradient(135deg, #f5f3ef 60%, #e8f0f8 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: -80px; top: -80px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,103,184,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .hero h1 { font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--text); margin-bottom: 1.25rem; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub { font-size: 1.05rem; color: var(--text-2); max-width: 420px; margin-bottom: 2.5rem; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--text); color: #fff; border: none;
+    padding: 13px 28px; border-radius: 8px; font-family: var(--font-body);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    transition: background var(--transition), transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: #333; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--text); border: 1.5px solid var(--border);
+    padding: 12px 28px; border-radius: 8px; font-family: var(--font-body);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    transition: border-color var(--transition), transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--text-3); transform: translateY(-1px); }
+  .hero-img { display: flex; justify-content: center; align-items: center; }
+  .hero-device {
+    width: 100%; max-width: 520px; aspect-ratio: 16/10;
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 18px; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.22);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .hero-device::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+  }
+  .device-screen-content {
+    width: 85%; height: 80%;
+    background: linear-gradient(180deg, #1e3a5f 0%, #0d1b35 100%);
+    border-radius: 6px; display: flex; flex-direction: column;
+    padding: 12px; gap: 8px; position: relative; z-index: 1;
+  }
+  .screen-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); }
+  .screen-bar.accent { background: rgba(0,103,184,0.7); width: 40%; }
+  .screen-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+  .screen-bar-sm { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); }
+  .screen-bar-sm:nth-child(2) { width: 75%; }
+  .screen-bar-sm:nth-child(3) { width: 55%; }
+  .hero-badge {
+    position: absolute; bottom: -18px; left: 28px;
+    background: #fff; border-radius: 10px; padding: 10px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.78rem;
+  }
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+  .badge-text { color: var(--text-2); }
+  .badge-text strong { color: var(--text); display: block; font-size: 0.85rem; }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    display: flex; align-items: center; justify-content: center;
+    gap: 3rem; padding: 1.5rem 5vw;
+    background: var(--text); color: rgba(255,255,255,0.7);
+    font-size: 0.8rem; flex-wrap: wrap;
+  }
+  .trust-item { display: flex; align-items: center; gap: 8px; }
+  .trust-icon { font-size: 1.1rem; }
+
+  /* ── FILTERS ── */
+  .filters-section { padding: 3rem 5vw 1.5rem; }
+  .filters-section h2 { font-family: var(--font-display); font-size: 2rem; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 7px 18px; border: 1px solid var(--border); border-radius: 99px;
+    background: transparent; font-family: var(--font-body); font-size: 0.825rem;
+    cursor: pointer; color: var(--text-2); transition: all var(--transition); white-space: nowrap;
+  }
+  .filter-btn:hover, .filter-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .sort-select {
+    margin-left: auto; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; font-family: var(--font-body); font-size: 0.825rem; color: var(--text-2);
+    cursor: pointer; outline: none;
+  }
+
+  /* ── PRODUCT GRID ── */
+  .products-section { padding: 1rem 5vw 4rem; }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+  .product-card {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    border: 1px solid var(--border); overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: pointer; position: relative;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+
+  .card-badge {
+    position: absolute; top: 14px; left: 14px; z-index: 2;
+    padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .badge-new { background: #e8f0f8; color: var(--accent); }
+  .badge-sale { background: #fde8e8; color: #c0392b; }
+  .badge-popular { background: #e8f8e8; color: var(--success); }
+
+  .card-wishlist {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
+    width: 34px; height: 34px; cursor: pointer; font-size: 1rem;
+    transition: background var(--transition), transform 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-wishlist:hover { background: #fff; transform: scale(1.1); }
+  .card-wishlist.active { color: #e74c3c; }
+
+  .card-img {
+    height: 200px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #f8f7f5 0%, #ede8e0 100%);
+    position: relative; overflow: hidden;
+  }
+  .laptop-svg { width: 160px; transition: transform var(--transition); }
+  .product-card:hover .laptop-svg { transform: scale(1.04) translateY(-3px); }
+
+  .card-body { padding: 18px 20px 20px; }
+  .card-series { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 5px; }
+  .card-name { font-family: var(--font-display); font-size: 1.2rem; color: var(--text); margin-bottom: 8px; line-height: 1.2; }
+  .card-specs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .spec-chip { background: #f5f3ef; border-radius: 5px; padding: 3px 9px; font-size: 0.72rem; color: var(--text-2); }
+  .card-rating { display: flex; align-items: center; gap: 5px; margin-bottom: 14px; }
+  .stars { color: #f59e0b; font-size: 0.85rem; letter-spacing: -1px; }
+  .rating-count { font-size: 0.78rem; color: var(--text-3); }
+  .card-pricing { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+  .price-current { font-size: 1.4rem; font-weight: 600; color: var(--text); }
+  .price-original { font-size: 0.9rem; color: var(--text-3); text-decoration: line-through; }
+  .price-save { font-size: 0.78rem; color: var(--warn); font-weight: 500; }
+  .card-actions { display: flex; gap: 8px; }
+  .btn-add {
+    flex: 1; background: var(--accent); color: #fff; border: none;
+    border-radius: 8px; padding: 10px; font-family: var(--font-body);
+    font-size: 0.875rem; font-weight: 500; cursor: pointer;
+    transition: background var(--transition), transform 0.12s;
+  }
+  .btn-add:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .btn-add:active { transform: scale(0.97); }
+  .btn-quick {
+    background: transparent; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; cursor: pointer; font-size: 0.875rem; color: var(--text-2);
+    transition: border-color var(--transition);
+  }
+  .btn-quick:hover { border-color: var(--text-3); }
+
+  .card-stock { font-size: 0.75rem; margin-top: 10px; }
+  .in-stock { color: var(--success); }
+  .low-stock { color: var(--warn); }
+
+  /* ── COMPARE BAR ── */
+  .compare-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+    background: var(--text); color: #fff; padding: 12px 5vw;
+    display: flex; align-items: center; gap: 1.5rem;
+    transform: translateY(100%); transition: transform var(--transition);
+    border-top: 2px solid var(--accent);
+  }
+  .compare-bar.visible { transform: translateY(0); }
+  .compare-slots { display: flex; gap: 10px; flex: 1; }
+  .compare-slot {
+    background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.3);
+    border-radius: 8px; padding: 6px 14px; font-size: 0.78rem; min-width: 140px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .compare-slot.filled { background: rgba(0,103,184,0.4); border-style: solid; border-color: var(--accent); }
+  .btn-compare { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 8px 20px; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; }
+  .btn-compare:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-clear-compare { background: transparent; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 0.8rem; font-family: var(--font-body); }
+
+  /* ── FEATURES SECTION ── */
+  .features-section { padding: 5rem 5vw; background: var(--text); color: #fff; }
+  .features-section h2 { font-family: var(--font-display); font-size: 2.5rem; letter-spacing: -0.03em; margin-bottom: 3rem; text-align: center; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .feature-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 28px 24px; }
+  .feature-icon { font-size: 2rem; margin-bottom: 16px; }
+  .feature-title { font-weight: 600; margin-bottom: 8px; font-size: 1rem; }
+  .feature-desc { font-size: 0.875rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+  /* ── CART DRAWER ── */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-drawer {
+    position: fixed; right: 0; top: 0; bottom: 0; width: 420px; max-width: 95vw;
+    background: #fff; z-index: 201; transform: translateX(100%);
+    transition: transform var(--transition); display: flex; flex-direction: column;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  }
+  .cart-drawer.open { transform: translateX(0); }
+  .cart-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .cart-header h3 { font-family: var(--font-display); font-size: 1.4rem; }
+  .cart-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-2); line-height: 1; padding: 4px; border-radius: 6px; }
+  .cart-close:hover { background: var(--bg); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-3); gap: 12px; font-size: 0.9rem; padding: 40px; text-align: center; }
+  .cart-empty-icon { font-size: 3rem; opacity: 0.4; }
+  .cart-item { display: flex; gap: 14px; padding: 14px; background: var(--bg); border-radius: 10px; }
+  .cart-item-img { width: 60px; height: 60px; background: linear-gradient(145deg, #f0ede8, #e8e3dc); border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+  .cart-item-info { flex: 1; min-width: 0; }
+  .cart-item-name { font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cart-item-config { font-size: 0.75rem; color: var(--text-3); margin-bottom: 8px; }
+  .cart-item-price { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .cart-item-actions { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .qty-btn { background: #fff; border: 1px solid var(--border); border-radius: 5px; width: 24px; height: 24px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
+  .qty-btn:hover { background: var(--bg); }
+  .qty-display { font-size: 0.875rem; font-weight: 500; min-width: 20px; text-align: center; }
+  .cart-item-remove { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.75rem; margin-left: auto; padding: 2px 6px; border-radius: 4px; font-family: var(--font-body); }
+  .cart-item-remove:hover { color: #c0392b; background: #fde8e8; }
+  .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+  .cart-summary { margin-bottom: 16px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 0.875rem; padding: 4px 0; color: var(--text-2); }
+  .summary-row.total { font-size: 1.05rem; font-weight: 600; color: var(--text); border-top: 1px solid var(--border); padding-top: 12px; margin-top: 8px; }
+  .btn-checkout { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 15px; font-family: var(--font-display); font-size: 1rem; cursor: pointer; transition: background var(--transition); margin-bottom: 8px; }
+  .btn-checkout:hover { background: var(--accent-2); }
+  .btn-continue { width: 100%; background: transparent; color: var(--text-2); border: 1px solid var(--border); border-radius: 10px; padding: 11px; font-family: var(--font-body); font-size: 0.875rem; cursor: pointer; transition: border-color var(--transition); }
+  .btn-continue:hover { border-color: var(--text-3); }
+
+  /* ── QUICK VIEW MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; opacity: 0; pointer-events: none; transition: opacity var(--transition); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 20px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform var(--transition); }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-inner { display: grid; grid-template-columns: 1fr 1fr; }
+  .modal-img { background: linear-gradient(145deg, #f8f7f5, #ede8e0); border-radius: 20px 0 0 20px; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+  .modal-body { padding: 32px; }
+  .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; float: right; color: var(--text-2); line-height: 1; margin-bottom: 16px; }
+  .modal-series { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 5px; }
+  .modal-name { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 12px; line-height: 1.2; }
+  .modal-price { font-size: 1.6rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+  .modal-config { margin-bottom: 20px; }
+  .config-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 8px; }
+  .config-options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .config-opt {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 7px;
+    font-size: 0.8rem; cursor: pointer; transition: all var(--transition);
+    background: transparent; font-family: var(--font-body);
+  }
+  .config-opt:hover { border-color: var(--accent); color: var(--accent); }
+  .config-opt.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .modal-desc { font-size: 0.875rem; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; }
+  .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+  .btn-modal-add { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 13px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background var(--transition); }
+  .btn-modal-add:hover { background: var(--accent-2); }
+
+  /* ── TOAST ── */
+  .toast-container { position: fixed; top: 80px; right: 24px; z-index: 400; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast {
+    background: var(--text); color: #fff; padding: 12px 18px; border-radius: 10px;
+    font-size: 0.85rem; display: flex; align-items: center; gap: 8px;
+    transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: all; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .toast.show { transform: translateX(0); }
+  .toast-icon { font-size: 1rem; }
+
+  /* ── FOOTER ── */
+  footer { background: #0a0a0a; color: rgba(255,255,255,0.6); padding: 4rem 5vw 2rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 3rem; margin-bottom: 3rem; }
+  .footer-brand h3 { font-family: var(--font-display); font-size: 1.5rem; color: #fff; margin-bottom: 10px; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 260px; }
+  .footer-col h4 { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.9); margin-bottom: 14px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col a { text-decoration: none; font-size: 0.85rem; color: rgba(255,255,255,0.5); transition: color var(--transition); }
+  .footer-col a:hover { color: rgba(255,255,255,0.9); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; flex-wrap: gap; gap: 1rem; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 5vw 2rem; min-height: auto; }
+    .hero-img { order: -1; }
+    .hero-device { max-width: 340px; }
+    .nav-links { display: none; }
+    .product-grid { grid-template-columns: 1fr; }
+    .modal-inner { grid-template-columns: 1fr; }
+    .modal-img { border-radius: 20px 20px 0 0; min-height: 200px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .compare-slots { display: none; }
+    .trust-bar { gap: 1.5rem; }
+  }
+
+  @keyframes fadeInUp { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: translateY(0); } }
+  .animate-in { animation: fadeInUp 0.5s ease both; }
+  .d1 { animation-delay: 0.1s; }
+  .d2 { animation-delay: 0.22s; }
+  .d3 { animation-delay: 0.34s; }
+  .d4 { animation-delay: 0.46s; }
+</style>
 </head>
 <body>
-  <div class="calculator bg-light">
-    <div id="display" class="display">0</div>
-    <div class="d-grid gap-2">
-      <div class="btn-group" role="group">
-        <button class="btn btn-secondary" onclick="clearDisplay()">C</button>
-        <button class="btn btn-secondary" onclick="deleteLast()">←</button>
-        <button class="btn btn-secondary" onclick="appendMinus()">±</button>
-        <button class="btn btn-secondary" onclick="appendOperator('/')">÷</button>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">Surface<span>Store</span></a>
+  <ul class="nav-links">
+    <li><a href="#products">Laptops</a></li>
+    <li><a href="#features">Why Surface</a></li>
+    <li><a href="#">Accessories</a></li>
+    <li><a href="#">Business</a></li>
+    <li><a href="#">Support</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="search-btn" onclick="toggleSearch()">⌕ Search</button>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <p class="hero-kicker animate-in d1">New Collection · 2025</p>
+    <h1 class="animate-in d2">Work <em>beautifully.</em><br>Go anywhere.</h1>
+    <p class="hero-sub animate-in d3">The Microsoft Surface Laptop lineup — engineered for speed, designed for life. Ultra-thin, AI-powered, all-day battery.</p>
+    <div class="hero-actions animate-in d4">
+      <a href="#products" class="btn-primary">Shop all laptops</a>
+      <a href="#features" class="btn-secondary">Learn more</a>
+    </div>
+  </div>
+  <div class="hero-img animate-in d3">
+    <div style="position:relative; width:100%;">
+      <div class="hero-device">
+        <div class="device-screen-content">
+          <div class="screen-bar accent"></div>
+          <div class="screen-bar" style="height:60px; background:rgba(255,255,255,0.04); border-radius:6px; margin-top:6px; display:flex; align-items:center; padding:10px; gap:8px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(0,103,184,0.5);"></div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+              <div style="height:5px;background:rgba(255,255,255,0.2);border-radius:3px;width:60%;"></div>
+              <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:3px;width:40%;"></div>
+            </div>
+          </div>
+          <div class="screen-bars">
+            <div class="screen-bar-sm"></div>
+            <div class="screen-bar-sm"></div>
+            <div class="screen-bar-sm"></div>
+          </div>
+        </div>
       </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('7')">7</button>
-        <button class="btn btn-light" onclick="appendNumber('8')">8</button>
-        <button class="btn btn-light" onclick="appendNumber('9')">9</button>
-        <button class="btn btn-secondary" onclick="appendOperator('*')">×</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('4')">4</button>
-        <button class="btn btn-light" onclick="appendNumber('5')">5</button>
-        <button class="btn btn-light" onclick="appendNumber('6')">6</button>
-        <button class="btn btn-secondary" onclick="appendOperator('-')">−</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('1')">1</button>
-        <button class="btn btn-light" onclick="appendNumber('2')">2</button>
-        <button class="btn btn-light" onclick="appendNumber('3')">3</button>
-        <button class="btn btn-secondary" onclick="appendOperator('+')">+</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('0')">0</button>
-        <button class="btn btn-light" onclick="appendDecimal()">.</button>
-        <button class="btn btn-primary" onclick="calculateResult()">=</button>
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        <div class="badge-text"><strong>120Hz OLED Display</strong>Copilot+ AI included</div>
       </div>
     </div>
   </div>
+</section>
 
-  <button id="toggleHistoryBtn" class="btn btn-outline-primary d-block mx-auto mb-3" onclick="toggleHistory()">Show History</button>
-  <div id="historyContainer"></div>
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">🚚</span> Free shipping over $999</div>
+  <div class="trust-item"><span class="trust-icon">↩</span> 60-day free returns</div>
+  <div class="trust-item"><span class="trust-icon">🔒</span> Secure checkout</div>
+  <div class="trust-item"><span class="trust-icon">🛡️</span> 2-year warranty</div>
+  <div class="trust-item"><span class="trust-icon">💳</span> 0% EMI available</div>
+</div>
 
-  <script>
-    let expression = '';
-    let history = [];
+<!-- FILTERS -->
+<section class="filters-section" id="products">
+  <h2>Surface Laptops</h2>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All models</button>
+    <button class="filter-btn" onclick="filterProducts('laptop5', this)">Surface Laptop 5</button>
+    <button class="filter-btn" onclick="filterProducts('laptop6', this)">Surface Laptop 6</button>
+    <button class="filter-btn" onclick="filterProducts('studio', this)">Surface Studio</button>
+    <button class="filter-btn" onclick="filterProducts('go', this)">Surface Go</button>
+    <button class="filter-btn" onclick="filterProducts('sale', this)">On Sale</button>
+    <select class="sort-select" onchange="sortProducts(this.value)">
+      <option value="featured">Sort: Featured</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="rating">Top Rated</option>
+    </select>
+  </div>
+</section>
 
-    function updateDisplay() {
-      const display = document.getElementById('display');
-      display.textContent = expression || '0';
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="product-grid" id="product-grid"></div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section" id="features">
+  <h2>Built for what's next.</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Copilot+ AI</div>
+      <div class="feature-desc">Neural Processing Unit with 40+ TOPS for on-device AI tasks, real-time translation, and intelligent features.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥️</div>
+      <div class="feature-title">OLED PixelSense</div>
+      <div class="feature-desc">Up to 120Hz Dynamic Refresh Rate with true blacks, vivid color accuracy and Dolby Vision IQ support.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔋</div>
+      <div class="feature-title">All-Day Battery</div>
+      <div class="feature-desc">Up to 22 hours of real-world battery life. Fast Charging gets you to 80% in under an hour.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔊</div>
+      <div class="feature-title">Studio Mics</div>
+      <div class="feature-desc">Four-microphone array with AI noise suppression. Sound crystal clear in any environment, every call.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏠</div>
+      <div class="feature-title">Sleek Chassis</div>
+      <div class="feature-desc">Precision machined aluminium body starting at just 2.8 lbs. Thin enough to slip into any bag.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔌</div>
+      <div class="feature-title">Full Connectivity</div>
+      <div class="feature-desc">Thunderbolt 4, USB-A, Surface Connect, and Wi-Fi 7 — everything you need, nothing you don't.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>SurfaceStore</h3>
+      <p>Authorised Microsoft Surface retailer. Premium laptops, expert support, and genuine accessories — delivered fast.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Surface Laptop 6</a></li>
+        <li><a href="#">Surface Pro</a></li>
+        <li><a href="#">Surface Studio</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">Refurbished</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Order tracking</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">Contact us</a></li>
+        <li><a href="#">FAQs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Sitemap</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 SurfaceStore. Not affiliated with Microsoft Corporation.</span>
+    <span>Made with care for Surface fans everywhere.</span>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h3>Your cart</h3>
+    <button class="cart-close" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p>Your cart is empty</p>
+      <p style="font-size:0.8rem;">Add a Surface laptop to get started</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none;">
+    <div class="cart-summary" id="cart-summary"></div>
+    <button class="btn-checkout" onclick="checkout()">Checkout securely →</button>
+    <button class="btn-continue" onclick="closeCart()">Continue shopping</button>
+  </div>
+</div>
+
+<!-- QUICK VIEW MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-inner" id="modal-inner"></div>
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compare-bar">
+  <span style="font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.6); white-space:nowrap;">Compare</span>
+  <div class="compare-slots" id="compare-slots">
+    <div class="compare-slot" id="cslot0">+ Add model</div>
+    <div class="compare-slot" id="cslot1">+ Add model</div>
+    <div class="compare-slot" id="cslot2">+ Add model</div>
+  </div>
+  <button class="btn-compare" id="compare-btn" disabled onclick="compareProducts()">Compare (0)</button>
+  <button class="btn-clear-compare" onclick="clearCompare()">Clear</button>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const PRODUCTS = [
+  { id:1, series:'laptop6', name:'Surface Laptop 6 13"', cpu:'Intel Core Ultra 5', ram:'16GB', storage:'512GB SSD', display:'13.5" OLED', price:1299, original:1499, rating:4.8, reviews:342, badge:'popular', stock:'in-stock', color:'#c4a882', desc:'The most powerful 13" Surface ever. Copilot+ AI, stunning OLED touchscreen, and up to 22hr battery. Ideal for students and professionals.' },
+  { id:2, series:'laptop6', name:'Surface Laptop 6 15"', cpu:'Intel Core Ultra 7', ram:'32GB', storage:'1TB SSD', display:'15" OLED', price:1799, original:1999, rating:4.9, reviews:189, badge:'new', stock:'in-stock', color:'#7a8fa6', desc:'Ultimate productivity in a 15" form factor. Ultra-fast Core Ultra 7, breathtaking OLED display, and premium aluminum chassis.' },
+  { id:3, series:'laptop5', name:'Surface Laptop 5 13"', cpu:'Intel Core i5', ram:'8GB', storage:'256GB SSD', display:'13.5" PixelSense', price:799, original:999, rating:4.5, reviews:621, badge:'sale', stock:'in-stock', color:'#b08b6e', desc:'Proven performer with a sleek design. Great everyday laptop for work, school, or creative projects at an accessible price.' },
+  { id:4, series:'laptop5', name:'Surface Laptop 5 15"', cpu:'Intel Core i7', ram:'16GB', storage:'512GB SSD', display:'15" PixelSense', price:1099, original:1299, rating:4.6, reviews:287, badge:'sale', stock:'low-stock', color:'#5a6a78', desc:'Power and portability combined. Spacious 15" touchscreen and Core i7 performance make complex tasks feel effortless.' },
+  { id:5, series:'studio', name:'Surface Laptop Studio 2', cpu:'Intel Core i7 H', ram:'32GB', storage:'1TB SSD', display:'14.4" Dynamic Woven"', price:2399, original:2699, rating:4.9, reviews:124, badge:'new', stock:'in-stock', color:'#8a8a9a', desc:'The creative powerhouse. Transform between laptop, stage, and studio modes. With NVIDIA GeForce RTX graphics built in.' },
+  { id:6, series:'go', name:'Surface Laptop Go 3', cpu:'Intel Core i5', ram:'8GB', storage:'256GB', display:'12.4" PixelSense', price:599, original:699, rating:4.3, reviews:534, badge:'sale', stock:'in-stock', color:'#c4a882', desc:'Compact, capable, and affordable. The lightest Surface laptop, perfect for students and those always on the move.' },
+  { id:7, series:'laptop6', name:'Surface Laptop 6 Business', cpu:'Intel Core Ultra 7', ram:'64GB', storage:'2TB SSD', display:'15" OLED', price:2999, original:3299, rating:5.0, reviews:56, badge:'new', stock:'in-stock', color:'#4a5568', desc:'Enterprise-grade Surface with vPro support, Windows 11 Pro, and maximum configuration for the most demanding workflows.' },
+  { id:8, series:'go', name:'Surface Go 4', cpu:'Intel N200', ram:'8GB', storage:'128GB', display:'10.5" PixelSense', price:449, original:499, rating:4.1, reviews:312, badge:null, stock:'in-stock', color:'#c4b5a0', desc:'The most portable Surface. Lightweight 2-in-1 tablet and laptop in one, ideal for students and light daily tasks.' },
+];
+
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let wishlist = new Set(JSON.parse(localStorage.getItem('wishlist') || '[]'));
+let compare = [];
+let filteredProducts = [...PRODUCTS];
+
+function getLaptopSVG(color) {
+  return `<svg class="laptop-svg" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="15" width="160" height="105" rx="8" fill="${color}" opacity="0.9"/>
+    <rect x="28" y="22" width="144" height="88" rx="4" fill="#1a1a2e"/>
+    <rect x="32" y="26" width="136" height="80" rx="3" fill="#0d1b35"/>
+    <rect x="36" y="30" width="60" height="6" rx="2" fill="rgba(0,103,184,0.6)"/>
+    <rect x="36" y="40" width="128" height="4" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+    <rect x="36" y="48" width="100" height="4" rx="1.5" fill="rgba(255,255,255,0.06)"/>
+    <rect x="36" y="56" width="80" height="4" rx="1.5" fill="rgba(255,255,255,0.05)"/>
+    <rect x="36" y="68" width="128" height="28" rx="3" fill="rgba(255,255,255,0.03)"/>
+    <rect x="5" y="120" width="190" height="8" rx="4" fill="${color}" opacity="0.7"/>
+    <rect x="85" y="118" width="30" height="3" rx="1.5" fill="rgba(0,0,0,0.3)"/>
+  </svg>`;
+}
+
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  if (!filteredProducts.length) {
+    grid.innerHTML = '<p style="color:var(--text-3); padding:2rem; grid-column:1/-1;">No products match this filter.</p>';
+    return;
+  }
+  grid.innerHTML = filteredProducts.map(p => `
+    <div class="product-card" id="card-${p.id}">
+      ${p.badge ? `<span class="card-badge badge-${p.badge === 'popular' ? 'popular' : p.badge === 'new' ? 'new' : 'sale'}">${p.badge === 'popular' ? 'Popular' : p.badge === 'new' ? 'New' : 'Sale'}</span>` : ''}
+      <button class="card-wishlist ${wishlist.has(p.id) ? 'active' : ''}" onclick="toggleWishlist(${p.id}, this)" title="Wishlist">
+        ${wishlist.has(p.id) ? '❤️' : '🤍'}
+      </button>
+      <div class="card-img">${getLaptopSVG(p.color)}</div>
+      <div class="card-body">
+        <div class="card-series">${p.series === 'laptop6' ? 'Laptop 6' : p.series === 'laptop5' ? 'Laptop 5' : p.series === 'studio' ? 'Studio 2' : 'Surface Go'}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-specs">
+          <span class="spec-chip">${p.cpu}</span>
+          <span class="spec-chip">${p.ram} RAM</span>
+          <span class="spec-chip">${p.storage}</span>
+          <span class="spec-chip">${p.display}</span>
+        </div>
+        <div class="card-rating">
+          <span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 ? '½' : ''}</span>
+          <span class="rating-count">${p.rating} (${p.reviews})</span>
+        </div>
+        <div class="card-pricing">
+          <span class="price-current">$${p.price.toLocaleString()}</span>
+          ${p.original !== p.price ? `<span class="price-original">$${p.original.toLocaleString()}</span><span class="price-save">Save $${(p.original - p.price).toLocaleString()}</span>` : ''}
+        </div>
+        <div class="card-actions">
+          <button class="btn-add" onclick="addToCart(${p.id})">Add to cart</button>
+          <button class="btn-quick" onclick="openQuickView(${p.id})" title="Quick view">⊕</button>
+          <button class="btn-quick" onclick="addToCompare(${p.id})" title="Compare" id="cmp-${p.id}">⊞</button>
+        </div>
+        <div class="card-stock ${p.stock === 'low-stock' ? 'low-stock' : 'in-stock'}">
+          ${p.stock === 'in-stock' ? '✓ In stock — ships in 1–2 days' : '⚠ Only a few left'}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (type === 'all') filteredProducts = [...PRODUCTS];
+  else if (type === 'sale') filteredProducts = PRODUCTS.filter(p => p.badge === 'sale');
+  else filteredProducts = PRODUCTS.filter(p => p.series === type);
+  renderProducts();
+}
+
+function sortProducts(val) {
+  if (val === 'price-asc') filteredProducts.sort((a,b) => a.price - b.price);
+  else if (val === 'price-desc') filteredProducts.sort((a,b) => b.price - a.price);
+  else if (val === 'rating') filteredProducts.sort((a,b) => b.rating - a.rating);
+  else filteredProducts = [...PRODUCTS].filter(p => filteredProducts.includes(p));
+  renderProducts();
+}
+
+function addToCart(id, config) {
+  const product = PRODUCTS.find(p => p.id === id);
+  const existing = cart.find(i => i.id === id);
+  if (existing) { existing.qty += 1; }
+  else { cart.push({ ...product, qty: 1, config: config || null }); }
+  saveCart();
+  updateCartUI();
+  showToast(`🛒 ${product.name} added to cart`);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+  updateCartUI();
+  renderCartItems();
+}
+
+function updateQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) return removeFromCart(id);
+  saveCart();
+  updateCartUI();
+  renderCartItems();
+}
+
+function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
+
+function updateCartUI() {
+  const count = cart.reduce((s,i) => s + i.qty, 0);
+  const el = document.getElementById('cart-count');
+  el.textContent = count;
+  el.style.transform = 'scale(1.4)';
+  setTimeout(() => el.style.transform = 'scale(1)', 200);
+}
+
+function renderCartItems() {
+  const container = document.getElementById('cart-items');
+  const footer = document.getElementById('cart-footer');
+  if (!cart.length) {
+    container.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p><p style="font-size:0.8rem;">Add a Surface laptop to get started</p></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${getLaptopSVG(item.color)}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-config">${item.ram} · ${item.storage}${item.config ? ' · ' + item.config : ''}</div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="cart-item-price">$${(item.price * item.qty).toLocaleString()}</div>
+          <div class="cart-item-actions">
+            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+            <span class="qty-display">${item.qty}</span>
+            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+            <button class="cart-item-remove" onclick="removeFromCart(${item.id})">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const shipping = subtotal > 999 ? 0 : 29;
+  const tax = Math.round(subtotal * 0.08);
+  document.getElementById('cart-summary').innerHTML = `
+    <div class="summary-row"><span>Subtotal (${cart.reduce((s,i)=>s+i.qty,0)} items)</span><span>$${subtotal.toLocaleString()}</span></div>
+    <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--success)">Free</span>' : '$'+shipping}</span></div>
+    <div class="summary-row"><span>Estimated tax</span><span>$${tax.toLocaleString()}</span></div>
+    <div class="summary-row total"><span>Total</span><span>$${(subtotal + shipping + tax).toLocaleString()}</span></div>
+  `;
+}
+
+function openCart() {
+  renderCartItems();
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function checkout() {
+  if (!cart.length) return;
+  showToast('✅ Redirecting to secure checkout…');
+  setTimeout(() => closeCart(), 800);
+}
+
+function toggleWishlist(id, btn) {
+  if (wishlist.has(id)) { wishlist.delete(id); btn.textContent = '🤍'; btn.classList.remove('active'); showToast('Removed from wishlist'); }
+  else { wishlist.add(id); btn.textContent = '❤️'; btn.classList.add('active'); showToast('❤️ Added to wishlist'); }
+  localStorage.setItem('wishlist', JSON.stringify([...wishlist]));
+}
+
+function openQuickView(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const discount = Math.round(((p.original - p.price) / p.original) * 100);
+  document.getElementById('modal-inner').innerHTML = `
+    <div class="modal-img">${getLaptopSVG(p.color)}</div>
+    <div class="modal-body">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-series">${p.series.toUpperCase()}</div>
+      <div class="modal-name">${p.name}</div>
+      <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:16px;">
+        <span class="modal-price">$${p.price.toLocaleString()}</span>
+        ${p.original !== p.price ? `<span style="font-size:0.9rem;color:var(--text-3);text-decoration:line-through;">$${p.original.toLocaleString()}</span><span style="font-size:0.8rem;color:var(--warn);">${discount}% off</span>` : ''}
+      </div>
+      <div class="modal-config">
+        <div class="config-label">Memory</div>
+        <div class="config-options">
+          <button class="config-opt ${p.ram === '8GB' ? 'active' : ''}" onclick="selectConfig(this, 'ram')">8GB</button>
+          <button class="config-opt ${p.ram === '16GB' ? 'active' : ''}" onclick="selectConfig(this, 'ram')">16GB</button>
+          <button class="config-opt ${p.ram === '32GB' ? 'active' : ''}" onclick="selectConfig(this, 'ram')">32GB</button>
+          <button class="config-opt ${p.ram === '64GB' ? 'active' : ''}" onclick="selectConfig(this, 'ram')">64GB</button>
+        </div>
+      </div>
+      <div class="modal-config">
+        <div class="config-label">Storage</div>
+        <div class="config-options">
+          <button class="config-opt ${p.storage === '128GB' ? 'active' : ''}" onclick="selectConfig(this, 'storage')">128GB</button>
+          <button class="config-opt ${p.storage === '256GB' || p.storage === '256GB SSD' ? 'active' : ''}" onclick="selectConfig(this, 'storage')">256GB</button>
+          <button class="config-opt ${p.storage === '512GB SSD' ? 'active' : ''}" onclick="selectConfig(this, 'storage')">512GB</button>
+          <button class="config-opt ${p.storage === '1TB SSD' ? 'active' : ''}" onclick="selectConfig(this, 'storage')">1TB</button>
+          <button class="config-opt ${p.storage === '2TB SSD' ? 'active' : ''}" onclick="selectConfig(this, 'storage')">2TB</button>
+        </div>
+      </div>
+      <div class="modal-desc">${p.desc}</div>
+      <div class="modal-actions">
+        <button class="btn-modal-add" onclick="addToCart(${p.id}); closeModal();">Add to cart — $${p.price.toLocaleString()}</button>
+      </div>
+      <div style="font-size:0.75rem; color:var(--text-3); margin-top:10px; text-align:center;">
+        ${p.stock === 'in-stock' ? '✓ In stock — ships in 1–2 business days' : '⚠ Low stock — order soon'}
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function selectConfig(btn, group) {
+  btn.closest('.config-options').querySelectorAll('.config-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function addToCompare(id) {
+  if (compare.includes(id)) {
+    compare = compare.filter(c => c !== id);
+    document.getElementById('cmp-' + id).style.color = '';
+  } else {
+    if (compare.length >= 3) { showToast('⚠ Max 3 models to compare'); return; }
+    compare.push(id);
+    document.getElementById('cmp-' + id).style.color = 'var(--accent)';
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compare-bar');
+  const btn = document.getElementById('compare-btn');
+  for (let i = 0; i < 3; i++) {
+    const slot = document.getElementById('cslot' + i);
+    if (compare[i]) {
+      const p = PRODUCTS.find(x => x.id === compare[i]);
+      slot.textContent = p.name;
+      slot.classList.add('filled');
+    } else {
+      slot.textContent = '+ Add model';
+      slot.classList.remove('filled');
     }
+  }
+  btn.textContent = `Compare (${compare.length})`;
+  btn.disabled = compare.length < 2;
+  bar.classList.toggle('visible', compare.length > 0);
+}
 
-    function appendNumber(num) {
-      expression += num;
-      updateDisplay();
-    }
+function clearCompare() {
+  compare = [];
+  document.querySelectorAll('[id^="cmp-"]').forEach(b => b.style.color = '');
+  updateCompareBar();
+}
 
-    function appendOperator(op) {
-      if (!expression) return;
-      const lastChar = expression.slice(-1);
-      if ('+-/*'.includes(lastChar)) {
-        expression = expression.slice(0, -1) + op;
-      } else {
-        expression += op;
-      }
-      updateDisplay();
-    }
+function compareProducts() {
+  if (compare.length < 2) return;
+  const models = compare.map(id => PRODUCTS.find(p => p.id === id));
+  const rows = ['cpu','ram','storage','display','price','rating'].map(key => {
+    const label = {cpu:'Processor',ram:'Memory',storage:'Storage',display:'Display',price:'Price',rating:'Rating'}[key];
+    return `<tr><td style="font-weight:500;padding:8px 12px;font-size:0.85rem;background:#f9f7f4;">${label}</td>${models.map(m => `<td style="padding:8px 12px;font-size:0.85rem;border-left:1px solid var(--border);">${key==='price'?'$'+m[key].toLocaleString():m[key]}</td>`).join('')}</tr>`;
+  }).join('');
+  document.getElementById('modal-inner').innerHTML = `
+    <div class="modal-body" style="grid-column:1/-1; padding:32px;">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-name" style="margin-bottom:20px;">Compare models</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <thead><tr><th style="padding:10px 12px;font-size:0.75rem;text-align:left;background:#f5f3ef;">Spec</th>${models.map(m=>`<th style="padding:10px 12px;font-size:0.85rem;font-weight:600;text-align:left;background:#f5f3ef;border-left:1px solid var(--border);">${m.name}</th>`).join('')}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
-    function appendDecimal() {
-      const lastOperatorIndex = Math.max(expression.lastIndexOf('+'), expression.lastIndexOf('-'), expression.lastIndexOf('*'), expression.lastIndexOf('/'));
-      const lastNumber = expression.slice(lastOperatorIndex + 1);
-      if (!lastNumber.includes('.')) {
-        if (!lastNumber) {
-          expression += '0.';
-        } else {
-          expression += '.';
-        }
-        updateDisplay();
-      }
-    }
+function toggleSearch() { showToast('🔍 Search coming soon'); }
 
-    function clearDisplay() {
-      expression = '';
-      updateDisplay();
-    }
+function showToast(msg) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<span>${msg}</span>`;
+  container.appendChild(toast);
+  requestAnimationFrame(() => { requestAnimationFrame(() => toast.classList.add('show')); });
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2800);
+}
 
-    function deleteLast() {
-      expression = expression.slice(0, -1);
-      updateDisplay();
-    }
-
-    function appendMinus() {
-      if (!expression) {
-        expression = '-';
-        updateDisplay();
-        return;
-      }
-      const lastOperatorIndex = Math.max(expression.lastIndexOf('+'), expression.lastIndexOf('-'), expression.lastIndexOf('*'), expression.lastIndexOf('/'));
-      let lastNumber = expression.slice(lastOperatorIndex + 1);
-      if (lastNumber.startsWith('-')) {
-        expression = expression.slice(0, lastOperatorIndex + 1) + lastNumber.slice(1);
-      } else {
-        expression = expression.slice(0, lastOperatorIndex + 1) + '-' + lastNumber;
-      }
-      updateDisplay();
-    }
-
-    function calculateResult() {
-      try {
-        const safeEval = new Function('return ' + expression);
-        const result = safeEval();
-        history.push(expression + ' = ' + result);
-        updateHistory();
-        expression = String(result);
-        updateDisplay();
-      } catch {
-        alert('Invalid Expression');
-        expression = '';
-        updateDisplay();
-      }
-    }
-
-    function updateHistory() {
-      const historyEl = document.getElementById('historyContainer');
-      historyEl.textContent = history.slice(-10).join('\n') || 'No history yet';
-    }
-
-    function toggleHistory() {
-      const historyContainer = document.getElementById('historyContainer');
-      const btn = document.getElementById('toggleHistoryBtn');
-      if (historyContainer.style.display === 'none') {
-        historyContainer.style.display = 'block';
-        btn.textContent = 'Hide History';
-      } else {
-        historyContainer.style.display = 'none';
-        btn.textContent = 'Show History';
-      }
-    }
-
-    updateDisplay();
-    updateHistory();
-  </script>
+// Init
+updateCartUI();
+renderProducts();
+</script>
 </body>
 </html>
