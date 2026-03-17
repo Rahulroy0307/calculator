@@ -193,11 +193,11 @@
 
   .card-img {
     height: 200px; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(145deg, #f8f7f5 0%, #ede8e0 100%);
+    background: #f8f7f5;
     position: relative; overflow: hidden;
   }
-  .laptop-svg { width: 160px; transition: transform var(--transition); }
-  .product-card:hover .laptop-svg { transform: scale(1.04) translateY(-3px); }
+  .card-img img { transition: transform 0.3s ease; }
+  .product-card:hover .card-img img { transform: scale(1.05) translateY(-3px); }
 
   .card-body { padding: 18px 20px 20px; }
   .card-series { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 5px; }
@@ -278,7 +278,7 @@
   .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-3); gap: 12px; font-size: 0.9rem; padding: 40px; text-align: center; }
   .cart-empty-icon { font-size: 3rem; opacity: 0.4; }
   .cart-item { display: flex; gap: 14px; padding: 14px; background: var(--bg); border-radius: 10px; }
-  .cart-item-img { width: 60px; height: 60px; background: linear-gradient(145deg, #f0ede8, #e8e3dc); border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+  .cart-item-img { width: 68px; height: 56px; background: #f8f7f5; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .cart-item-info { flex: 1; min-width: 0; }
   .cart-item-name { font-size: 0.875rem; font-weight: 500; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cart-item-config { font-size: 0.75rem; color: var(--text-3); margin-bottom: 8px; }
@@ -304,7 +304,7 @@
   .modal { background: #fff; border-radius: 20px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform var(--transition); }
   .modal-overlay.open .modal { transform: scale(1); }
   .modal-inner { display: grid; grid-template-columns: 1fr 1fr; }
-  .modal-img { background: linear-gradient(145deg, #f8f7f5, #ede8e0); border-radius: 20px 0 0 20px; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+  .modal-img { background: #f8f7f5; border-radius: 20px 0 0 20px; display: flex; align-items: center; justify-content: center; min-height: 300px; padding: 20px; }
   .modal-body { padding: 32px; }
   .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; float: right; color: var(--text-2); line-height: 1; margin-bottom: 16px; }
   .modal-series { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 5px; }
@@ -401,27 +401,18 @@
     </div>
   </div>
   <div class="hero-img animate-in d3">
-    <div style="position:relative; width:100%;">
-      <div class="hero-device">
-        <div class="device-screen-content">
-          <div class="screen-bar accent"></div>
-          <div class="screen-bar" style="height:60px; background:rgba(255,255,255,0.04); border-radius:6px; margin-top:6px; display:flex; align-items:center; padding:10px; gap:8px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(0,103,184,0.5);"></div>
-            <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
-              <div style="height:5px;background:rgba(255,255,255,0.2);border-radius:3px;width:60%;"></div>
-              <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:3px;width:40%;"></div>
-            </div>
-          </div>
-          <div class="screen-bars">
-            <div class="screen-bar-sm"></div>
-            <div class="screen-bar-sm"></div>
-            <div class="screen-bar-sm"></div>
-          </div>
+    <div style="position:relative; width:100%; display:flex; justify-content:center;">
+      <div style="position:relative; max-width:520px; width:100%;">
+        <img
+          src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-7th-edition-platinum-1?wid=960&hei=700&fit=crop&bg=f5f3ef"
+          alt="Microsoft Surface Laptop"
+          style="width:100%; height:auto; object-fit:contain; display:block; filter:drop-shadow(0 24px 48px rgba(0,0,0,0.14));"
+          onerror="this.src='https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RW12hAX?ver=5bfe&q=90&m=6&h=431&w=767&b=%23FFFFFF&f=jpg&o=f&aim=true'"
+        >
+        <div class="hero-badge">
+          <div class="badge-dot"></div>
+          <div class="badge-text"><strong>120Hz OLED Display</strong>Copilot+ AI included</div>
         </div>
-      </div>
-      <div class="hero-badge">
-        <div class="badge-dot"></div>
-        <div class="badge-text"><strong>120Hz OLED Display</strong>Copilot+ AI included</div>
       </div>
     </div>
   </div>
@@ -586,14 +577,38 @@
 
 <script>
 const PRODUCTS = [
-  { id:1, series:'laptop6', name:'Surface Laptop 6 13"', cpu:'Intel Core Ultra 5', ram:'16GB', storage:'512GB SSD', display:'13.5" OLED', price:1299, original:1499, rating:4.8, reviews:342, badge:'popular', stock:'in-stock', color:'#c4a882', desc:'The most powerful 13" Surface ever. Copilot+ AI, stunning OLED touchscreen, and up to 22hr battery. Ideal for students and professionals.' },
-  { id:2, series:'laptop6', name:'Surface Laptop 6 15"', cpu:'Intel Core Ultra 7', ram:'32GB', storage:'1TB SSD', display:'15" OLED', price:1799, original:1999, rating:4.9, reviews:189, badge:'new', stock:'in-stock', color:'#7a8fa6', desc:'Ultimate productivity in a 15" form factor. Ultra-fast Core Ultra 7, breathtaking OLED display, and premium aluminum chassis.' },
-  { id:3, series:'laptop5', name:'Surface Laptop 5 13"', cpu:'Intel Core i5', ram:'8GB', storage:'256GB SSD', display:'13.5" PixelSense', price:799, original:999, rating:4.5, reviews:621, badge:'sale', stock:'in-stock', color:'#b08b6e', desc:'Proven performer with a sleek design. Great everyday laptop for work, school, or creative projects at an accessible price.' },
-  { id:4, series:'laptop5', name:'Surface Laptop 5 15"', cpu:'Intel Core i7', ram:'16GB', storage:'512GB SSD', display:'15" PixelSense', price:1099, original:1299, rating:4.6, reviews:287, badge:'sale', stock:'low-stock', color:'#5a6a78', desc:'Power and portability combined. Spacious 15" touchscreen and Core i7 performance make complex tasks feel effortless.' },
-  { id:5, series:'studio', name:'Surface Laptop Studio 2', cpu:'Intel Core i7 H', ram:'32GB', storage:'1TB SSD', display:'14.4" Dynamic Woven"', price:2399, original:2699, rating:4.9, reviews:124, badge:'new', stock:'in-stock', color:'#8a8a9a', desc:'The creative powerhouse. Transform between laptop, stage, and studio modes. With NVIDIA GeForce RTX graphics built in.' },
-  { id:6, series:'go', name:'Surface Laptop Go 3', cpu:'Intel Core i5', ram:'8GB', storage:'256GB', display:'12.4" PixelSense', price:599, original:699, rating:4.3, reviews:534, badge:'sale', stock:'in-stock', color:'#c4a882', desc:'Compact, capable, and affordable. The lightest Surface laptop, perfect for students and those always on the move.' },
-  { id:7, series:'laptop6', name:'Surface Laptop 6 Business', cpu:'Intel Core Ultra 7', ram:'64GB', storage:'2TB SSD', display:'15" OLED', price:2999, original:3299, rating:5.0, reviews:56, badge:'new', stock:'in-stock', color:'#4a5568', desc:'Enterprise-grade Surface with vPro support, Windows 11 Pro, and maximum configuration for the most demanding workflows.' },
-  { id:8, series:'go', name:'Surface Go 4', cpu:'Intel N200', ram:'8GB', storage:'128GB', display:'10.5" PixelSense', price:449, original:499, rating:4.1, reviews:312, badge:null, stock:'in-stock', color:'#c4b5a0', desc:'The most portable Surface. Lightweight 2-in-1 tablet and laptop in one, ideal for students and light daily tasks.' },
+  { id:1, series:'laptop6', name:'Surface Laptop 6 13"', cpu:'Intel Core Ultra 5', ram:'16GB', storage:'512GB SSD', display:'13.5" OLED', price:1299, original:1499, rating:4.8, reviews:342, badge:'popular', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-13in-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-13in-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'The most powerful 13" Surface ever. Copilot+ AI, stunning OLED touchscreen, and up to 22hr battery. Ideal for students and professionals.' },
+  { id:2, series:'laptop6', name:'Surface Laptop 6 15"', cpu:'Intel Core Ultra 7', ram:'32GB', storage:'1TB SSD', display:'15" OLED', price:1799, original:1999, rating:4.9, reviews:189, badge:'new', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-15in-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-15in-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'Ultimate productivity in a 15" form factor. Ultra-fast Core Ultra 7, breathtaking OLED display, and premium aluminum chassis.' },
+  { id:3, series:'laptop5', name:'Surface Laptop 5 13"', cpu:'Intel Core i5', ram:'8GB', storage:'256GB SSD', display:'13.5" PixelSense', price:799, original:999, rating:4.5, reviews:621, badge:'sale', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-5-13in-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-5-13in-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'Proven performer with a sleek design. Great everyday laptop for work, school, or creative projects at an accessible price.' },
+  { id:4, series:'laptop5', name:'Surface Laptop 5 15"', cpu:'Intel Core i7', ram:'16GB', storage:'512GB SSD', display:'15" PixelSense', price:1099, original:1299, rating:4.6, reviews:287, badge:'sale', stock:'low-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-5-15in-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-5-15in-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'Power and portability combined. Spacious 15" touchscreen and Core i7 performance make complex tasks feel effortless.' },
+  { id:5, series:'studio', name:'Surface Laptop Studio 2', cpu:'Intel Core i7 H', ram:'32GB', storage:'1TB SSD', display:'14.4" Dynamic Woven', price:2399, original:2699, rating:4.9, reviews:124, badge:'new', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-studio-2-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-studio-2-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'The creative powerhouse. Transform between laptop, stage, and studio modes. With NVIDIA GeForce RTX graphics built in.' },
+  { id:6, series:'go', name:'Surface Laptop Go 3', cpu:'Intel Core i5', ram:'8GB', storage:'256GB', display:'12.4" PixelSense', price:599, original:699, rating:4.3, reviews:534, badge:'sale', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-go-3-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-go-3-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'Compact, capable, and affordable. The lightest Surface laptop, perfect for students and those always on the move.' },
+  { id:7, series:'laptop6', name:'Surface Laptop 6 Business', cpu:'Intel Core Ultra 7', ram:'64GB', storage:'2TB SSD', display:'15" OLED', price:2999, original:3299, rating:5.0, reviews:56, badge:'new', stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-15in-black-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-laptop-6-15in-black-1?wid=120&hei=88&fit=crop',
+    desc:'Enterprise-grade Surface with vPro support, Windows 11 Pro, and maximum configuration for the most demanding workflows.' },
+  { id:8, series:'go', name:'Surface Go 4', cpu:'Intel N200', ram:'8GB', storage:'128GB', display:'10.5" PixelSense', price:449, original:499, rating:4.1, reviews:312, badge:null, stock:'in-stock',
+    img:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-go-4-platinum-1?wid=515&hei=376&fit=crop',
+    img2:'https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/surface-go-4-platinum-1?wid=120&hei=88&fit=crop',
+    desc:'The most portable Surface. Lightweight 2-in-1 tablet and laptop in one, ideal for students and light daily tasks.' },
 ];
 
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -601,19 +616,15 @@ let wishlist = new Set(JSON.parse(localStorage.getItem('wishlist') || '[]'));
 let compare = [];
 let filteredProducts = [...PRODUCTS];
 
-function getLaptopSVG(color) {
-  return `<svg class="laptop-svg" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="20" y="15" width="160" height="105" rx="8" fill="${color}" opacity="0.9"/>
-    <rect x="28" y="22" width="144" height="88" rx="4" fill="#1a1a2e"/>
-    <rect x="32" y="26" width="136" height="80" rx="3" fill="#0d1b35"/>
-    <rect x="36" y="30" width="60" height="6" rx="2" fill="rgba(0,103,184,0.6)"/>
-    <rect x="36" y="40" width="128" height="4" rx="1.5" fill="rgba(255,255,255,0.08)"/>
-    <rect x="36" y="48" width="100" height="4" rx="1.5" fill="rgba(255,255,255,0.06)"/>
-    <rect x="36" y="56" width="80" height="4" rx="1.5" fill="rgba(255,255,255,0.05)"/>
-    <rect x="36" y="68" width="128" height="28" rx="3" fill="rgba(255,255,255,0.03)"/>
-    <rect x="5" y="120" width="190" height="8" rx="4" fill="${color}" opacity="0.7"/>
-    <rect x="85" y="118" width="30" height="3" rx="1.5" fill="rgba(0,0,0,0.3)"/>
-  </svg>`;
+function getProductImg(p, size) {
+  const url = size === 'thumb' ? p.img2 : p.img;
+  if (size === 'thumb') {
+    return `<img src="${url}" alt="${p.name}" style="width:56px;height:44px;object-fit:contain;display:block;" onerror="this.parentElement.innerHTML=\'<span style=font-size:1.4rem>💻</span>\'">`;
+  }
+  if (size === 'modal') {
+    return `<img src="${url}" alt="${p.name}" style="max-width:85%;max-height:85%;object-fit:contain;display:block;" onerror="this.parentElement.innerHTML=\'<span style=font-size:4rem>💻</span>\'">`;
+  }
+  return `<img src="${url}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:14px;display:block;transition:transform 0.3s ease;" onerror="this.parentElement.innerHTML=\'<span style=font-size:3rem>💻</span>\'">`;
 }
 
 function renderProducts() {
@@ -628,7 +639,7 @@ function renderProducts() {
       <button class="card-wishlist ${wishlist.has(p.id) ? 'active' : ''}" onclick="toggleWishlist(${p.id}, this)" title="Wishlist">
         ${wishlist.has(p.id) ? '❤️' : '🤍'}
       </button>
-      <div class="card-img">${getLaptopSVG(p.color)}</div>
+      <div class="card-img">${getProductImg(p, 'card')}</div>
       <div class="card-body">
         <div class="card-series">${p.series === 'laptop6' ? 'Laptop 6' : p.series === 'laptop5' ? 'Laptop 5' : p.series === 'studio' ? 'Studio 2' : 'Surface Go'}</div>
         <div class="card-name">${p.name}</div>
@@ -724,7 +735,7 @@ function renderCartItems() {
   footer.style.display = 'block';
   container.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <div class="cart-item-img">${getLaptopSVG(item.color)}</div>
+      <div class="cart-item-img">${getProductImg(item, 'thumb')}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-config">${item.ram} · ${item.storage}${item.config ? ' · ' + item.config : ''}</div>
@@ -781,7 +792,7 @@ function openQuickView(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const discount = Math.round(((p.original - p.price) / p.original) * 100);
   document.getElementById('modal-inner').innerHTML = `
-    <div class="modal-img">${getLaptopSVG(p.color)}</div>
+    <div class="modal-img">${getProductImg(p, 'card')}</div>
     <div class="modal-body">
       <button class="modal-close" onclick="closeModal()">×</button>
       <div class="modal-series">${p.series.toUpperCase()}</div>
