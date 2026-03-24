@@ -516,6 +516,134 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 </section>
+ <!-- CONTACT / ORDER FORM -->
+<section class="surface-form-section">
+  <style>
+    .surface-form-section {
+      padding: 5rem 5vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+    }
+
+    .form-container {
+      width: 420px;
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      color: white;
+      text-align: center;
+    }
+
+    .form-container h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .form-container p {
+      font-size: 14px;
+      margin-bottom: 25px;
+      color: #cbd5f5;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input,
+    .input-group textarea,
+    .input-group select {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      outline: none;
+      color: white;
+      font-size: 14px;
+    }
+
+    .input-group label {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      color: #94a3b8;
+      font-size: 13px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: 0.3s;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:valid + label,
+    .input-group textarea:focus + label,
+    .input-group textarea:valid + label,
+    .input-group select:focus + label,
+    .input-group select:valid + label {
+      top: -8px;
+      font-size: 11px;
+      color: #38bdf8;
+      background: #0f172a;
+      padding: 0 5px;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .form-container button:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+  </style>
+
+  <div class="form-container">
+    <h2>Request Your Surface Laptop</h2>
+    <p>Get personalized recommendations and offers.</p>
+
+    <form>
+      <div class="input-group">
+        <input type="text" required />
+        <label>Full Name</label>
+      </div>
+
+      <div class="input-group">
+        <input type="email" required />
+        <label>Email Address</label>
+      </div>
+
+      <div class="input-group">
+        <select required>
+          <option value="" disabled selected></option>
+          <option>Surface Laptop 6</option>
+          <option>Surface Laptop 5</option>
+          <option>Surface Studio</option>
+          <option>Surface Go</option>
+        </select>
+        <label>Select Model</label>
+      </div>
+
+      <div class="input-group">
+        <textarea rows="3" required></textarea>
+        <label>Your Requirement</label>
+      </div>
+
+      <button type="submit">Submit Request</button>
+    </form>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -603,141 +731,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toast-container"></div>
- <section class="surface-form-section">
-  <style>
-    .surface-form-section {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .form-container {
-      width: 400px;
-      padding: 40px;
-      border-radius: 20px;
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      color: white;
-      text-align: center;
-    }
-
-    .form-container h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    .form-container p {
-      font-size: 14px;
-      margin-bottom: 30px;
-      color: #cbd5f5;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 25px;
-    }
-
-    .input-group input,
-    .input-group textarea,
-    .input-group select {
-      width: 100%;
-      padding: 12px 10px;
-      background: transparent;
-      border: 1px solid #475569;
-      border-radius: 8px;
-      outline: none;
-      color: white;
-      font-size: 14px;
-    }
-
-    .input-group label {
-      position: absolute;
-      top: 50%;
-      left: 10px;
-      color: #94a3b8;
-      font-size: 13px;
-      transform: translateY(-50%);
-      pointer-events: none;
-      transition: 0.3s;
-    }
-
-    .input-group input:focus + label,
-    .input-group input:valid + label,
-    .input-group textarea:focus + label,
-    .input-group textarea:valid + label,
-    .input-group select:focus + label,
-    .input-group select:valid + label {
-      top: -8px;
-      font-size: 11px;
-      color: #38bdf8;
-      background: #0f172a;
-      padding: 0 5px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-      transform: translateY(-2px);
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 480px) {
-      .form-container {
-        width: 90%;
-        padding: 25px;
-      }
-    }
-  </style>
-
-  <div class="form-container">
-    <h2>Get Your Surface Laptop</h2>
-    <p>Experience power, performance, and elegance.</p>
-
-    <form>
-      <div class="input-group">
-        <input type="text" required />
-        <label>Full Name</label>
-      </div>
-
-      <div class="input-group">
-        <input type="email" required />
-        <label>Email Address</label>
-      </div>
-
-      <div class="input-group">
-        <select required>
-          <option value="" disabled selected></option>
-          <option>Surface Laptop Go</option>
-          <option>Surface Laptop 5</option>
-          <option>Surface Laptop Studio</option>
-        </select>
-        <label>Select Model</label>
-      </div>
-
-      <div class="input-group">
-        <textarea rows="3" required></textarea>
-        <label>Message</label>
-      </div>
-
-      <button type="submit">Request Now</button>
-    </form>
-  </div>
-</section>
 
 <script>
 const PRODUCTS = [
